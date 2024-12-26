@@ -1,11 +1,5 @@
-import { Route, Routes } from "react-router-dom";
-
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<h1> Sortering Algoritmer </h1>} />
-    </Routes>
-  );
+  return <h1>Sorteringsalgoritmer</h1>;
 }
 
 export default App;
