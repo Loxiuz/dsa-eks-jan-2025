@@ -1,36 +1,73 @@
+import { FormEvent, useState } from "react";
 import Stack from "./datastructures/stack.js";
 
 export default function PatienceSortVisualizer(props: {
   arrayToSort: number[];
 }) {
   const arrayToSort = props.arrayToSort;
+  const [sortedArray, setSortedArray] = useState<number[]>([]);
+  const [piles, setPiles] = useState<Stack[]>([]);
+  const [stepDelay, setStepDelay] = useState(500);
+  const [isSorting, setIsSorting] = useState(false);
 
-  function makePiles() {
-    const piles: Stack[] = [];
+  function delay() {
+    return new Promise((resolve) => setTimeout(resolve, stepDelay));
+  }
 
-    arrayToSort.forEach((element) => {
-      let peekValuePlaced = false;
+  function visualizeStacks(piles: Stack[]) {
+    const pilesAsArrays = piles.map((pile) => {
+      const stackArray: number[] = [];
+      let node = pile.tail;
+      while (node) {
+        stackArray.unshift(node.data);
+        node = node.prev;
+      }
+      return stackArray;
+    });
 
-      for (const pile of piles) {
+    return (
+      <>
+        <span style={{ fontWeight: "bold" }}>Piles:</span>
+        {pilesAsArrays.map((_, index) => (
+          <div key={index}>
+            <div>
+              {index + 1}: [{pilesAsArrays[index].join(", ")}]
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  async function makePiles() {
+    const pilesArray: Stack[] = [];
+
+    for (const value of arrayToSort) {
+      let isPeekValuePlaced = false;
+      for (const pile of pilesArray) {
         const peekedValue = pile.peek();
-        if (peekedValue !== undefined && peekedValue >= element) {
-          pile.push(element);
-          peekValuePlaced = true;
+        if (peekedValue !== undefined && peekedValue >= value) {
+          pile.push(value);
+          isPeekValuePlaced = true;
           break;
         }
       }
 
-      if (!peekValuePlaced) {
+      if (!isPeekValuePlaced) {
         const newPile = new Stack();
-        newPile.push(element);
-        piles.push(newPile);
+        newPile.push(value);
+        pilesArray.push(newPile);
       }
-    });
-    return mergePiles(piles);
+
+      setPiles([...pilesArray]);
+      await delay();
+    }
+
+    return mergePiles(pilesArray);
   }
 
-  function mergePiles(piles: Stack[]): number[] {
-    const sortedArray: number[] = [];
+  async function mergePiles(piles: Stack[]) {
+    const tempSortedArray: number[] = [];
     const tempPeekArray: (number | undefined)[] = piles.map((pile) =>
       pile.peek()
     );
@@ -52,20 +89,58 @@ export default function PatienceSortVisualizer(props: {
       if (minIndex !== -1) {
         const poppedValue = piles[minIndex].pop();
         if (poppedValue !== undefined) {
-          sortedArray.push(poppedValue);
+          tempSortedArray.push(poppedValue);
+          setSortedArray([...tempSortedArray]);
+          await delay();
         }
+
         tempPeekArray[minIndex] = piles[minIndex].peek();
       }
     }
 
-    return sortedArray;
+    return tempSortedArray;
+  }
+
+  function handleFormChange(e: FormEvent<HTMLFormElement>) {
+    const target = e.currentTarget as HTMLFormElement;
+    const delayInput = parseInt(
+      (target.elements.namedItem("delayInput") as HTMLInputElement).value
+    );
+    setStepDelay(delayInput);
+  }
+
+  async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!isSorting) {
+      setSortedArray([]);
+      setPiles([]);
+
+      setIsSorting(true);
+      await makePiles();
+      setIsSorting(false);
+    }
   }
 
   return (
     <>
       <h3>Patience Sort Visualizer</h3>
-      <p>Unsorted array: [{arrayToSort.join(", ")}]</p>
-      <p>Sorted array: [{makePiles().join(", ")}]</p>
+
+      <h4>Unsorted array: [{arrayToSort.join(", ")}]</h4>
+
+      <form
+        id="delayForm"
+        onSubmit={handleFormSubmit}
+        onChange={handleFormChange}
+      >
+        <label htmlFor="delayInput">Delay in ms:</label>
+        <input type="number" name="delayInput" placeholder="500" />
+        <input type="submit" name="formSubmitBtn" value={"Sort"} />
+      </form>
+      <br />
+
+      <div>{visualizeStacks(piles)}</div>
+
+      <h4>Sorted array: [{sortedArray.join(", ")}]</h4>
     </>
   );
 }
