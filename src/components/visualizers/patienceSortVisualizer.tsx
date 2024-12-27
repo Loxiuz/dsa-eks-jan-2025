@@ -4,10 +4,12 @@ import Stack from "./datastructures/stack.js";
 export default function PatienceSortVisualizer(props: {
   arrayToSort: number[];
 }) {
+  const DEFAULT_DELAY = 500;
+
   const arrayToSort = props.arrayToSort;
   const [sortedArray, setSortedArray] = useState<number[]>([]);
   const [piles, setPiles] = useState<Stack[]>([]);
-  const [stepDelay, setStepDelay] = useState(500);
+  const [stepDelay, setStepDelay] = useState(DEFAULT_DELAY);
   const [isSorting, setIsSorting] = useState(false);
 
   function delay() {
@@ -106,7 +108,11 @@ export default function PatienceSortVisualizer(props: {
     const delayInput = parseInt(
       (target.elements.namedItem("delayInput") as HTMLInputElement).value
     );
-    setStepDelay(delayInput);
+    if (delayInput) {
+      setStepDelay(delayInput);
+    } else {
+      setStepDelay(DEFAULT_DELAY);
+    }
   }
 
   async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
@@ -133,7 +139,11 @@ export default function PatienceSortVisualizer(props: {
         onChange={handleFormChange}
       >
         <label htmlFor="delayInput">Delay in ms:</label>
-        <input type="number" name="delayInput" placeholder="500" />
+        <input
+          type="number"
+          name="delayInput"
+          placeholder={`${DEFAULT_DELAY}`}
+        />
         <input type="submit" name="formSubmitBtn" value={"Sort"} />
       </form>
       <br />
