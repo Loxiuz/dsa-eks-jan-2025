@@ -1,9 +1,3 @@
-body {
-  background-color: #a6a6a6;
-  font-family: "Roboto", sans-serif;
-  text-align: center;
-}
-
 #unsortedGridContainer,
 #sortedGridContainer {
   display: grid;

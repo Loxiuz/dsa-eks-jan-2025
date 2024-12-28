@@ -13,6 +13,7 @@ export default function PatienceSortVisualizer(props: {
   const [piles, setPiles] = useState<Stack[]>([]);
   const [stepDelay, setStepDelay] = useState(DEFAULT_DELAY);
   const [isSorting, setIsSorting] = useState(false);
+  const [lastPileUpdatedIndex, setLastPileUpdatedIndex] = useState(-1);
 
   function delay() {
     return new Promise((resolve) => setTimeout(resolve, stepDelay));
@@ -24,21 +25,23 @@ export default function PatienceSortVisualizer(props: {
     const unsortedArrayAfterPoppedValue = [...unsortedArray];
 
     for (const value of unsortedArray) {
-      let isPoppedValuePlaced = false;
-      for (const pile of pilesArray) {
-        const peekedValue = pile.peek();
+      let isPeekedValuePlaced = false;
+      for (let i = 0; i < pilesArray.length; i++) {
+        const peekedValue = pilesArray[i].peek();
 
         if (peekedValue !== undefined && peekedValue >= value) {
-          pile.push(value);
-          isPoppedValuePlaced = true;
+          pilesArray[i].push(value);
+          isPeekedValuePlaced = true;
+          setLastPileUpdatedIndex(i);
           break;
         }
       }
 
-      if (!isPoppedValuePlaced) {
+      if (!isPeekedValuePlaced) {
         const newPile = new Stack();
         newPile.push(value);
         pilesArray.push(newPile);
+        setLastPileUpdatedIndex(pilesArray.length - 1);
       }
 
       unsortedArrayAfterPoppedValue.shift();
@@ -77,6 +80,7 @@ export default function PatienceSortVisualizer(props: {
         if (poppedValue !== undefined) {
           tempSortedArray.push(poppedValue);
           setSortedArray([...tempSortedArray]);
+          setLastPileUpdatedIndex(minIndex);
           await delay();
         }
 
@@ -98,40 +102,63 @@ export default function PatienceSortVisualizer(props: {
       return stackArray;
     });
 
-    const colorFirstElement = (
-      index: number,
-      array: number[],
-      value: number
-    ) => {
-      if (array && index === 0) {
-        return (
-          <span key={index} style={{ color: "red" }}>
-            {value}
-          </span>
-        );
-      }
-    };
-
     return (
       <div id="pilesGridContainer">
-        {pilesAsArrays.map((_, index) => (
-          <p key={index}>
-            {pilesAsArrays[index].map((value, index) => {
-              return (
-                <span key={index}>
-                  <span>
-                    {colorFirstElement(index, pilesAsArrays[index], value) ||
-                      value}
-                  </span>
-                  <br />
-                </span>
-              );
-            })}
-          </p>
-        ))}
+        {pilesAsArrays.map(
+          (_, index) =>
+            colorLastUpdatedPile(index, "blue", pilesAsArrays) || (
+              <p key={index} id="pilesGridItem">
+                {pilesAsArrays[index].map((value, index) => {
+                  return (
+                    <span key={index}>
+                      <span>{value}</span>
+                      <br />
+                    </span>
+                  );
+                })}
+              </p>
+            )
+        )}
       </div>
     );
   }
+
+  const colorLastUpdatedPile = (
+    index: number,
+    color: string,
+    array: number[][]
+  ) => {
+    if (array && index === lastPileUpdatedIndex) {
+      return (
+        <p key={index} id="pilesGridItem" style={{ color: color }}>
+          {array[index].map((value, index) => {
+            return (
+              <span key={index}>
+                <span>{value}</span>
+                <br />
+              </span>
+            );
+          })}
+        </p>
+      );
+    }
+  };
+
+  const colorElementInArrayGridByIndex = (
+    index: number,
+    indexToColor: number,
+    color: string,
+    array: number[],
+    value: number
+  ) => {
+    if (array && index === indexToColor) {
+      return (
+        <div key={index} style={{ color: color }}>
+          {value}
+        </div>
+      );
+    }
+  };
 
   function handleFormChange(e: FormEvent<HTMLFormElement>) {
     const target = e.currentTarget as HTMLFormElement;
@@ -166,7 +193,13 @@ export default function PatienceSortVisualizer(props: {
       <div id="unsortedGridContainer">
         {unsortedArray.map((value, index) => (
           <div key={index} className="unsortedGridItem">
-            {value}
+            {colorElementInArrayGridByIndex(
+              index,
+              0,
+              "blue",
+              unsortedArray,
+              value
+            ) || value}
           </div>
         ))}
       </div>
@@ -196,7 +229,13 @@ export default function PatienceSortVisualizer(props: {
       <div id="sortedGridContainer">
         {sortedArray.map((value, index) => (
           <div key={index} className="sortedGridItem">
-            {value}
+            {colorElementInArrayGridByIndex(
+              index,
+              sortedArray.length - 1,
+              "blue",
+              unsortedArray,
+              value
+            ) || value}
           </div>
         ))}
       </div>
