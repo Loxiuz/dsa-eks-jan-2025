@@ -1,0 +1,1 @@
+#unsortedGridContainer,#sortedGridContainer{display:grid;grid-template-columns:repeat(10,50px);grid-gap:10px;justify-content:center;margin-top:20px}#pilesGridContainer{display:grid;grid-template-columns:repeat(5,50px);grid-gap:10px;justify-content:center;margin-top:20px}body{background-color:#a6a6a6;font-family:Roboto,sans-serif;text-align:center}
