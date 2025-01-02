@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import Stack from "./datastructures/stack.js";
 import "./PatienceSortVisualizer.css";
 import PatienceSortControlsForm from "./PatienceSortControls.js";
+import { useNavigate } from "react-router-dom";
 
 export default function PatienceSortVisualizer(props: {
   arrayToSort: number[];
@@ -18,6 +19,7 @@ export default function PatienceSortVisualizer(props: {
   const [stepDelay, setStepDelay] = useState(DEFAULT_DELAY);
   const [isSorting, setIsSorting] = useState(false);
   const [lastPileUpdatedIndex, setLastPileUpdatedIndex] = useState(-1);
+  const nav = useNavigate();
 
   function delay() {
     return new Promise((resolve) => setTimeout(resolve, stepDelay));
@@ -229,6 +231,13 @@ export default function PatienceSortVisualizer(props: {
           defaultMaxNumber={DEFAULT_MAX_NUMBER_IN_UNSORTED_ARRAY}
           defaultDelay={DEFAULT_DELAY}
         />
+        <button
+          onClick={() => {
+            nav(-1);
+          }}
+        >
+          {"Back"}
+        </button>
       </div>
 
       <div id="patienceSortVisual">
