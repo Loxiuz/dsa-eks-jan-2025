@@ -1,11 +1,12 @@
 import { FormEvent, useState } from "react";
 import Stack from "./datastructures/stack.js";
 import "./PatienceSortVisualizer.css";
+import PatienceSortControlsForm from "./PatienceSortControls.js";
 
 export default function PatienceSortVisualizer(props: {
   arrayToSort: number[];
 }) {
-  const DEFAULT_DELAY = 500;
+  const DEFAULT_DELAY = 1000;
 
   const arrayToSort = props.arrayToSort;
   const [sortedArray, setSortedArray] = useState<number[]>([]);
@@ -153,7 +154,7 @@ export default function PatienceSortVisualizer(props: {
   ) => {
     if (array && index === indexToColor) {
       return (
-        <div key={index} style={{ color: color }}>
+        <div key={index} style={{ color: color, fontSize: "35px" }}>
           {value}
         </div>
       );
@@ -186,59 +187,52 @@ export default function PatienceSortVisualizer(props: {
   }
 
   return (
-    <>
-      <h3>Patience Sort Visualizer</h3>
-
-      <h4>Unsorted array:</h4>
-      <div id="unsortedGridContainer">
-        {unsortedArray.map((value, index) => (
-          <div key={index} className="unsortedGridItem">
-            {colorElementInArrayGridByIndex(
-              index,
-              0,
-              "blue",
-              unsortedArray,
-              value
-            ) || value}
-          </div>
-        ))}
-      </div>
-      <br />
-
-      <form
-        id="delayForm"
-        onSubmit={handleFormSubmit}
-        onChange={handleFormChange}
-      >
-        <label htmlFor="delayInput">Delay in ms:</label>
-        <input
-          type="number"
-          id="delayInput"
-          name="delayInput"
-          placeholder={`${DEFAULT_DELAY}`}
+    <div id="patienceSortVisualizer">
+      <div id="patienceSortControls">
+        <h3>Patience Sort Visualizer</h3>
+        <PatienceSortControlsForm
+          handleChange={handleFormChange}
+          handleSubmit={handleFormSubmit}
+          sortedArray={sortedArray}
+          arrayToSort={arrayToSort}
         />
-        {(sortedArray.length === arrayToSort.length && (
-          <input type="submit" name="formSubmitBtn" value={"Reset"} />
-        )) || <input type="submit" name="formSubmitBtn" value={"Sort"} />}
-      </form>
-
-      <h4>Piles:</h4>
-      <div id="stacksVisual">{visualizeStacks(piles)}</div>
-
-      <h4>Sorted array:</h4>
-      <div id="sortedGridContainer">
-        {sortedArray.map((value, index) => (
-          <div key={index} className="sortedGridItem">
-            {colorElementInArrayGridByIndex(
-              index,
-              sortedArray.length - 1,
-              "blue",
-              unsortedArray,
-              value
-            ) || value}
-          </div>
-        ))}
       </div>
-    </>
+
+      <div id="patienceSortVisual">
+        <h4>Unsorted array:</h4>
+        <div id="unsortedGridContainer">
+          {unsortedArray.map((value, index) => (
+            <div key={index} className="unsortedGridItem">
+              {colorElementInArrayGridByIndex(
+                index,
+                0,
+                "blue",
+                unsortedArray,
+                value
+              ) || value}
+            </div>
+          ))}
+        </div>
+        <br />
+
+        <h4>Piles:</h4>
+        <div id="stacksVisual">{visualizeStacks(piles)}</div>
+
+        <h4>Sorted array:</h4>
+        <div id="sortedGridContainer">
+          {sortedArray.map((value, index) => (
+            <div key={index} className="sortedGridItem">
+              {colorElementInArrayGridByIndex(
+                index,
+                sortedArray.length - 1,
+                "blue",
+                unsortedArray,
+                value
+              ) || value}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

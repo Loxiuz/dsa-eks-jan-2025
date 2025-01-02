@@ -1,3 +1,14 @@
+#patienceSortVisualizer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 3px solid black;
+  border-radius: 30px;
+  width: 100%;
+  height: 100%;
+  background-color: #717171;
+  color: white;
+}
+
 #unsortedGridContainer,
 #sortedGridContainer {
   display: grid;
