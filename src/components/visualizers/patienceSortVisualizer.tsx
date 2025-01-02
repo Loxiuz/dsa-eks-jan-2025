@@ -6,6 +6,9 @@ import PatienceSortControlsForm from "./PatienceSortControls.js";
 export default function PatienceSortVisualizer(props: {
   arrayToSort: number[];
 }) {
+  const DEFAULT_MAX_NUMBER_IN_UNSORTED_ARRAY = 100;
+  const DEFAULT_MIN_NUMBER_IN_UNSORTED_ARRAY = 1;
+  const DEFAULT_UNSORTED_ARRAY_SIZE = 20;
   const DEFAULT_DELAY = 1000;
 
   const arrayToSort = props.arrayToSort;
@@ -18,6 +21,12 @@ export default function PatienceSortVisualizer(props: {
 
   function delay() {
     return new Promise((resolve) => setTimeout(resolve, stepDelay));
+  }
+
+  function createArrayToSort(size: number, min: number, max: number): number[] {
+    return Array.from({ length: size }, () =>
+      Math.floor(Math.random() * max + min)
+    );
   }
 
   async function makePiles() {
@@ -154,7 +163,7 @@ export default function PatienceSortVisualizer(props: {
   ) => {
     if (array && index === indexToColor) {
       return (
-        <div key={index} style={{ color: color, fontSize: "35px" }}>
+        <div key={index} style={{ color: color }}>
           {value}
         </div>
       );
@@ -163,13 +172,33 @@ export default function PatienceSortVisualizer(props: {
 
   function handleFormChange(e: FormEvent<HTMLFormElement>) {
     const target = e.currentTarget as HTMLFormElement;
-    const delayInput = parseInt(
-      (target.elements.namedItem("delayInput") as HTMLInputElement).value
-    );
+    const delayInput =
+      parseInt(
+        (target.elements.namedItem("delayInput") as HTMLInputElement).value
+      ) || DEFAULT_DELAY;
+    const unsortedArraySizeInput =
+      parseInt(
+        (target.elements.namedItem("unsortedArraySize") as HTMLInputElement)
+          .value
+      ) || DEFAULT_UNSORTED_ARRAY_SIZE;
+    const minNumberInput =
+      parseInt(
+        (target.elements.namedItem("minNumberRange") as HTMLInputElement).value
+      ) || DEFAULT_MIN_NUMBER_IN_UNSORTED_ARRAY;
+    const maxNumberInput =
+      parseInt(
+        (target.elements.namedItem("maxNumberRange") as HTMLInputElement).value
+      ) || DEFAULT_MAX_NUMBER_IN_UNSORTED_ARRAY;
+
     if (delayInput) {
       setStepDelay(delayInput);
-    } else {
-      setStepDelay(DEFAULT_DELAY);
+      setUnsortedArray(
+        createArrayToSort(
+          unsortedArraySizeInput,
+          minNumberInput,
+          maxNumberInput
+        )
+      );
     }
   }
 
@@ -188,13 +217,17 @@ export default function PatienceSortVisualizer(props: {
 
   return (
     <div id="patienceSortVisualizer">
-      <div id="patienceSortControls">
+      <div>
         <h3>Patience Sort Visualizer</h3>
         <PatienceSortControlsForm
           handleChange={handleFormChange}
           handleSubmit={handleFormSubmit}
           sortedArray={sortedArray}
           arrayToSort={arrayToSort}
+          defaultUnsortedArraySize={DEFAULT_UNSORTED_ARRAY_SIZE}
+          defaultMinNumber={DEFAULT_MIN_NUMBER_IN_UNSORTED_ARRAY}
+          defaultMaxNumber={DEFAULT_MAX_NUMBER_IN_UNSORTED_ARRAY}
+          defaultDelay={DEFAULT_DELAY}
         />
       </div>
 

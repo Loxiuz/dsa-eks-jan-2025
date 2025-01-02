@@ -1,0 +1,21 @@
+#patienceSortControlsForm {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 10px;
+  width: 50px;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  justify-content: center;
+}
+
+#patienceSortControls {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+#minMaxInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+}

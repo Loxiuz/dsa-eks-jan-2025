@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import PatienceSortVisualizer from "./components/visualizers/PatienceSortVisualizer";
+import PatienceSortVisualizer from "./components/visualizers/patienceSortVisualizer.tsx";
 import Homepage from "./components/Homepage";
 
 function createArrayToSort(): number[] {
