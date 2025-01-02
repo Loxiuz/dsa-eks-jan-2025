@@ -64,9 +64,22 @@ export default function PatienceSortControlsForm(props: {
           placeholder={`${defaultDelay}`}
         />
         {(sortedArray.length === arrayToSort.length && (
-          <input type="submit" name="formSubmitBtn" value={"Reset"} />
-        )) || <input type="submit" name="formSubmitBtn" value={"Sort"} />}
+          <input
+            id="patienceSortSubmitBtn"
+            type="submit"
+            name="formSubmitBtn"
+            value={"Reset"}
+          />
+        )) || (
+          <input
+            id="patienceSortSubmitBtn"
+            type="submit"
+            name="formSubmitBtn"
+            value={"Sort"}
+          />
+        )}
         <input
+          id="reloadBtn"
           type="button"
           value={"Reload"}
           onClick={() => {
