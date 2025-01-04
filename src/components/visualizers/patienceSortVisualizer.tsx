@@ -3,6 +3,7 @@ import Stack from "./datastructures/stack.js";
 import "./PatienceSortVisualizer.css";
 import PatienceSortControlsForm from "./PatienceSortControls.js";
 import { useNavigate } from "react-router-dom";
+import InputGrid from "./InputGrid.js";
 
 export default function PatienceSortVisualizer() {
   const DEFAULT_MAX_IN_UNSORTED_ARRAY = 100;
@@ -27,6 +28,7 @@ export default function PatienceSortVisualizer() {
   const [stepDelay, setStepDelay] = useState(DEFAULT_DELAY);
   const [isSorting, setIsSorting] = useState(false);
   const [lastPileUpdatedIndex, setLastPileUpdatedIndex] = useState(-1);
+  const [isInputGridVisible, setIsInputGridVisible] = useState(false);
   const nav = useNavigate();
 
   function delay() {
@@ -254,20 +256,34 @@ export default function PatienceSortVisualizer() {
 
       <div id="patienceSortVisual">
         <h4>
-          Unsorted array: <button>+</button>
+          Unsorted array:{" "}
+          {
+            <button
+              onClick={() => {
+                if (isInputGridVisible) {
+                  setIsInputGridVisible(false);
+                } else {
+                  setIsInputGridVisible(true);
+                }
+              }}
+            >
+              {(isInputGridVisible && "v") || "<"}
+            </button>
+          }
         </h4>
         <div id="unsortedGridContainer">
-          {unsortedArray.map((value, index) => (
-            <div key={index} className="unsortedGridItem">
-              {colorElementInArrayGridByIndex(
-                index,
-                0,
-                "blue",
-                unsortedArray,
-                value
-              ) || value}
-            </div>
-          ))}
+          {(isInputGridVisible && <InputGrid />) ||
+            unsortedArray.map((value, index) => (
+              <div key={index} className="unsortedGridItem">
+                {colorElementInArrayGridByIndex(
+                  index,
+                  0,
+                  "blue",
+                  unsortedArray,
+                  value
+                ) || value}
+              </div>
+            ))}
         </div>
         <br />
 
