@@ -4,22 +4,20 @@ import "./PatienceSortControls.css";
 export default function PatienceSortControlsForm(props: {
   handleChange: (e: FormEvent<HTMLFormElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  sortedArray: number[];
-  arrayToSort: number[];
   defaultUnsortedArraySize: number;
   defaultMinNumber: number;
   defaultMaxNumber: number;
   defaultDelay: number;
+  isDoneSorting: boolean;
 }) {
   const {
     handleChange: handleFormChange,
     handleSubmit: handleFormSubmit,
-    sortedArray,
-    arrayToSort,
     defaultUnsortedArraySize,
     defaultMinNumber,
     defaultMaxNumber,
     defaultDelay,
+    isDoneSorting,
   } = props;
   return (
     <div id="patienceSortControls">
@@ -63,7 +61,7 @@ export default function PatienceSortControlsForm(props: {
           name="delayInput"
           placeholder={`${defaultDelay}`}
         />
-        {(sortedArray.length === arrayToSort.length && (
+        {(isDoneSorting && (
           <input
             id="patienceSortSubmitBtn"
             type="submit"
@@ -78,14 +76,6 @@ export default function PatienceSortControlsForm(props: {
             value={"Sort"}
           />
         )}
-        <input
-          id="reloadBtn"
-          type="button"
-          value={"Reload"}
-          onClick={() => {
-            location.reload();
-          }}
-        />
       </form>
     </div>
   );

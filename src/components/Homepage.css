@@ -8,7 +8,7 @@ body {
 button,
 #patienceSortSubmitBtn,
 #reloadBtn {
-  background-color: #234bfd;
+  background-color: #3a51b9;
   color: white;
   padding: 10px;
   text-align: center;
@@ -16,6 +16,6 @@ button,
   display: inline-block;
   font-size: 20px;
   cursor: pointer;
-  border: blue;
+  border: #3a51b9;
   border-radius: 12px;
 }

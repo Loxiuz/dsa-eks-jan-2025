@@ -1,10 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import PatienceSortVisualizer from "./components/visualizers/patienceSortVisualizer.tsx";
 import Homepage from "./components/Homepage";
-
-function createArrayToSort(): number[] {
-  return Array.from({ length: 20 }, () => Math.floor(Math.random() * 100));
-}
+import PatienceSortVisualizer from "./components/visualizers/PatienceSortVisualizer.tsx";
 
 function App() {
   return (
@@ -12,7 +8,7 @@ function App() {
       <Route path="/" element={<Homepage />} />
       <Route
         path="/patience_sort_visualizer"
-        element={<PatienceSortVisualizer arrayToSort={createArrayToSort()} />}
+        element={<PatienceSortVisualizer />}
       />
     </Routes>
   );
