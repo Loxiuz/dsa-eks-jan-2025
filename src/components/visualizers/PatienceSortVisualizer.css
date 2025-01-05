@@ -17,7 +17,19 @@
   grid-gap: 10px;
   justify-content: center;
   margin-top: 20px;
-  /* font-weight: bold; */
+}
+
+#inputGridForm {
+  display: grid;
+  grid-template-columns: repeat(10, 50px);
+  grid-gap: 10px;
+}
+
+#inputGridForm input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 15px;
 }
 
 #pilesGridContainer {

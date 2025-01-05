@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Stack from "./datastructures/stack.js";
 import "./PatienceSortVisualizer.css";
 import PatienceSortControlsForm from "./PatienceSortControls.js";
@@ -24,6 +24,7 @@ export default function PatienceSortVisualizer() {
       unsortedArrayProps.max
     )
   );
+  const [inputUnsortedArray, setInputUnsortedArray] = useState<number[]>([]);
   const [piles, setPiles] = useState<Stack[]>([]);
   const [stepDelay, setStepDelay] = useState(DEFAULT_DELAY);
   const [isSorting, setIsSorting] = useState(false);
@@ -182,7 +183,7 @@ export default function PatienceSortVisualizer() {
     }
   };
 
-  function handleFormChange(e: FormEvent<HTMLFormElement>) {
+  function handleControlsFormChange(e: FormEvent<HTMLFormElement>) {
     const target = e.currentTarget as HTMLFormElement;
     const delayInput =
       parseInt(
@@ -213,17 +214,43 @@ export default function PatienceSortVisualizer() {
     });
   }
 
+  function handleInputGridFormChange(e: FormEvent<HTMLFormElement>) {
+    const target = e.currentTarget as HTMLFormElement;
+    const inputs = target.getElementsByTagName("input");
+
+    const unsortedArrayFromInputs: number[] = [];
+
+    for (const input of inputs) {
+      if (input.value !== "") {
+        unsortedArrayFromInputs.push(parseInt(input.value));
+      }
+    }
+
+    setInputUnsortedArray([...unsortedArrayFromInputs]);
+  }
+
+  useEffect(() => {
+    if (isInputGridVisible) {
+      setUnsortedArray([...inputUnsortedArray]);
+    }
+  }, [isInputGridVisible, inputUnsortedArray]);
+
   async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!isSorting) {
-      setUnsortedArray(
-        createArrayToSort(
-          unsortedArrayProps.size,
-          unsortedArrayProps.min,
-          unsortedArrayProps.max
-        )
-      );
+      if (isInputGridVisible) {
+        setUnsortedArray([...inputUnsortedArray]);
+      } else {
+        setUnsortedArray(
+          createArrayToSort(
+            unsortedArrayProps.size,
+            unsortedArrayProps.min,
+            unsortedArrayProps.max
+          )
+        );
+      }
+
       setSortedArray([]);
       setPiles([]);
       setIsSorting(true);
@@ -237,7 +264,7 @@ export default function PatienceSortVisualizer() {
       <div>
         <h3>Patience Sort Visualizer</h3>
         <PatienceSortControlsForm
-          handleChange={handleFormChange}
+          handleChange={handleControlsFormChange}
           handleSubmit={handleFormSubmit}
           defaultUnsortedArraySize={DEFAULT_UNSORTED_ARRAY_SIZE}
           defaultMinNumber={DEFAULT_MIN_IN_UNSORTED_ARRAY}
@@ -272,7 +299,13 @@ export default function PatienceSortVisualizer() {
           }
         </h4>
         <div id="unsortedGridContainer">
-          {(isInputGridVisible && <InputGrid />) ||
+          {(isInputGridVisible && (
+            <InputGrid
+              onChange={handleInputGridFormChange}
+              onSubmit={handleFormSubmit}
+              size={unsortedArrayProps.size}
+            />
+          )) ||
             unsortedArray.map((value, index) => (
               <div key={index} className="unsortedGridItem">
                 {colorElementInArrayGridByIndex(
