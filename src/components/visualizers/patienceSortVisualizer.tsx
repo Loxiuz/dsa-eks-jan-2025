@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Stack from "./datastructures/stack.js";
 import "./PatienceSortVisualizer.css";
 import PatienceSortControlsForm from "./PatienceSortControls.js";
@@ -229,27 +229,17 @@ export default function PatienceSortVisualizer() {
     setInputUnsortedArray([...unsortedArrayFromInputs]);
   }
 
-  useEffect(() => {
-    if (isInputGridVisible) {
-      setUnsortedArray([...inputUnsortedArray]);
-    }
-  }, [isInputGridVisible, inputUnsortedArray]);
-
   async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!isSorting) {
-      if (isInputGridVisible) {
-        setUnsortedArray([...inputUnsortedArray]);
-      } else {
-        setUnsortedArray(
-          createArrayToSort(
-            unsortedArrayProps.size,
-            unsortedArrayProps.min,
-            unsortedArrayProps.max
-          )
-        );
-      }
+      setUnsortedArray(
+        createArrayToSort(
+          unsortedArrayProps.size,
+          unsortedArrayProps.min,
+          unsortedArrayProps.max
+        )
+      );
 
       setSortedArray([]);
       setPiles([]);
@@ -289,12 +279,13 @@ export default function PatienceSortVisualizer() {
               onClick={() => {
                 if (isInputGridVisible) {
                   setIsInputGridVisible(false);
+                  setUnsortedArray([...inputUnsortedArray]);
                 } else {
                   setIsInputGridVisible(true);
                 }
               }}
             >
-              {(isInputGridVisible && "v") || "<"}
+              {(isInputGridVisible && "✓") || "+"}
             </button>
           }
         </h4>
